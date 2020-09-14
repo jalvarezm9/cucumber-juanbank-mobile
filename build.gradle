@@ -1,0 +1,79 @@
+group 'com.cedaniel200.screenplay'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+apply plugin: 'net.serenity-bdd.aggregator'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+    jcenter()
+}
+
+configurations {
+    localDeps
+    localDeps.transitive = false
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+        jcenter()
+    }
+    dependencies {
+        classpath("net.serenity-bdd:serenity-gradle-plugin:2.0.17")
+    }
+}
+
+ext{
+    serenityVersion = '2.0.17'
+    serenityCucumberVersion = '1.9.20'
+}
+
+dependencies {
+    testImplementation "net.serenity-bdd:serenity-core:$rootProject.ext.serenityVersion"
+    testImplementation "net.serenity-bdd:serenity-junit:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-screenplay:$rootProject.ext.serenityVersion"
+    implementation "net.serenity-bdd:serenity-cucumber:$rootProject.ext.serenityCucumberVersion"
+
+    implementation group: 'io.appium', name: 'java-client', version: '6.1.0'
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.assertj:assertj-core:3.9.1'
+
+    testImplementation 'org.slf4j:slf4j-simple:1.7.7'
+}
+
+gradle.startParameter.continueOnFailure = true
+
+task androidJC(type: Test) {
+    systemProperties System.getProperties()
+    systemProperties['context'] = 'android:8.1'
+    systemProperties['appium.platformName'] = 'android'
+    systemProperties['appium.hub'] = 'http://0.0.0.0:4723/wd/hub'
+    systemProperties['appium.deviceName'] = '6NUDU18829001793'
+    systemProperties['appium.platformVersion'] = '8.0'
+    systemProperties['appium.appPackage'] = 'com.experitest.ExperiBank'
+    systemProperties['appium.appActivity'] = 'com.experitest.ExperiBank.LoginActivity'
+    testLogging.showStandardStreams = true
+    include "com/cedaniel200/eribank/pageobject/runners/Authentication.class"
+}
+
+task iosJC(type: Test) {
+    systemProperties System.getProperties()
+    systemProperties['appium.automationName'] = 'XCUITest'
+    systemProperties['appium.platformName'] = 'iOS'
+    systemProperties['appium.bundleId'] = 'com.interbankUAT.bancamovil'
+    systemProperties['appium.hub'] = 'http://0.0.0.0:4723/wd/hub'
+    systemProperties['appium.platformVersion'] = '11.4.1'
+    systemProperties['appium.deviceName'] = 'iPhone 7 MDP'
+    systemProperties['appium.udid'] = '4c4aaedee1e2906b06e02a16e0e070e057c9ba7e'
+    systemProperties['appium.xcodeOrgId'] = '9699H5Y845'
+    systemProperties['appium.xcodeSigningId'] = 'iPhone Developer'
+
+    testLogging.showStandardStreams = true
+    include "com/everis/TestRunner.class"
+}
