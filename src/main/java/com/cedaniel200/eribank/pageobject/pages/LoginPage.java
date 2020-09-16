@@ -1,5 +1,6 @@
 package com.cedaniel200.eribank.pageobject.pages;
 
+import static com.cedaniel200.eribank.pageobject.driver.AppiumDriver.isAndroid;
 import net.serenitybdd.core.pages.PageObject;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -18,7 +19,9 @@ public class LoginPage extends PageObject{
     }
 
     private void clickOnLogin() {
-
+        if(isAndroid()){
+            System.out.println("La ejecución de esta sección solo le compete a el sistema operativo Android");
+        }
         buttonLogin.click();
     }
 
